@@ -3,13 +3,13 @@
 
 ## Programming vacancies compare
 The script outputs two comparative tables of average salaries of programmers by programming languages
-The first table of vacancies from the site hh.ru , the second table from the site superjob.ru
+The first table of vacancies from the site [hh.ru](https://hh.ru) , the second table from the site [superjob.ru](https://superjob.ru)
 
 
 ## Requirements
 Python 3 must be installed to work. You also need to install the requests, python-dotenv libraries,
 terminaltables, which are described in the file requirements.txt
-To install python 3, download and read the installation instructions on the website [python.org](https://www.python.org/downoloads)
+To install python 3, download and read the installation instructions on the website [python.org](https://www.python.org/downloads/)
 
 
 ## How to install
@@ -43,12 +43,12 @@ The code is written for educational purposes on online-course for web-developers
 
 # Сравниваем вакансии программистов
 Скрипт выводит две сравнительные таблицы средних зарплат программистов по языкам программирования
-Первая таблица вакансий с сайта hh.ru, вторая таблица с сайта superjob.ru
+Первая таблица вакансий с сайта [hh.ru](https://hh.ru), вторая таблица с сайта [superjob.ru](https://superjob.ru)
 
 ## Требования
 Для работы должен быть установлен python3. А также необходимо установить библиотеки requests, python-dotenv, 
 terminaltables, которые описаны в файле requirements.txt
-Чтобы установить python3 скачайте и ознакомьтесь с инструкцией по установке на сайте [python.org](https://www.python.org/downoloads)
+Чтобы установить python3 скачайте и ознакомьтесь с инструкцией по установке на сайте [python.org](https://www.python.org/downloads/)
 
 ## Как установить
 Библиотека requests устанавливается командой:
@@ -75,4 +75,4 @@ pip install terminaltables==3.1.10
 python main.py
 ```
 
-Код написан в образовательных целях на онлайн-курсе для веб-разработчиков dvmn.org.
+Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [dvmn.org](https://dvmn.org).
