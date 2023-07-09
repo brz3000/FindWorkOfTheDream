@@ -1,18 +1,18 @@
 # Comparing programmer vacancies
  displays a table of average salaries of programmers.
 
-##Programming vacancies compare
+## Programming vacancies compare
 The script outputs two comparative tables of average salaries of programmers by programming languages
 The first table of vacancies from the site hh.ru , the second table from the site superjob.ru
 
 
-##Requirements
+## Requirements
 Python 3 must be installed to work. You also need to install the requests, python-dotenv libraries,
 terminaltables, which are described in the file requirements.txt
 To install python 3, download and read the installation instructions on the website [python.org](https://www.python.org/downoloads)
 
 
-##How to install
+## How to install
 Библиотека requests устанавливается командой:
 ```bash
 pip install requests
@@ -41,7 +41,7 @@ Project Goals
 The code is written for educational purposes on online-course for web-developers dvmn.org.
 
 
-#Сравниваем вакансии программистов
+# Сравниваем вакансии программистов
 Скрипт выводит две сравнительные таблицы средних зарплат программистов по языкам программирования
 Первая таблица вакансий с сайта hh.ru, вторая таблица с сайта superjob.ru
 
@@ -50,7 +50,7 @@ The code is written for educational purposes on online-course for web-developers
 terminaltables, которые описаны в файле requirements.txt
 Чтобы установить python3 скачайте и ознакомьтесь с инструкцией по установке на сайте [python.org](https://www.python.org/downoloads)
 
-##Как установить
+## Как установить
 Библиотека requests устанавливается командой:
 ```bash
 pip install requests
