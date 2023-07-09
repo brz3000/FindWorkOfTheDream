@@ -13,7 +13,7 @@ To install python 3, download and read the installation instructions on the webs
 
 
 ## How to install
-Библиотека requests устанавливается командой:
+The requests library is installed by the command:
 ```bash
 pip install requests
 ```
