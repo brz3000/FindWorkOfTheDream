@@ -13,18 +13,11 @@ To install python 3, download and read the installation instructions on the webs
 
 
 ## How to install
-The requests library is installed by the command:
+Necessary  libraries is installed by the command:
 ```bash
-pip install requests
+pip install -r requirements.txt
 ```
-The python-dotenv library is installed by the command:
-```bash
-pip install python-dotenv
-```
-The terminal tables library is installed by the command:
-```bash
-pip install terminaltables==3.1.10
-```
+
 
 ## Settings
 It is necessary that there is a .env file in the project directory that contains environment variables:
@@ -51,17 +44,9 @@ terminaltables, которые описаны в файле requirements.txt
 Чтобы установить python3 скачайте и ознакомьтесь с инструкцией по установке на сайте [python.org](https://www.python.org/downloads/)
 
 ## Как установить
-Библиотека requests устанавливается командой:
+Необходимые библиотеки устанавливаются командой:
 ```bash
-pip install requests
-```
-Библиотека python-dotenv устанавливается командой:
-```bash
-pip install python-dotenv
-```
-Библиотека terminaltables устанавливается командой:
-```bash
-pip install terminaltables==3.1.10
+pip install -r requirements.txt
 ```
 
 ## Настройки
@@ -70,6 +55,7 @@ pip install terminaltables==3.1.10
 * SJ_ID - id который выдает superjob при регистрации приложения
 * SJ_LOGIN - логин от superjob
 * SJ_PASS - пароль от superjob
+
 ## Пример запуска скрипта
 ```bash
 python main.py
