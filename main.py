@@ -147,7 +147,7 @@ def main():
                  "Java", "JavaScript"]
     title_hh = 'HH Moscow'
     title_sj = 'SuperJob Moscow'
-    table_data = [
+    avg_salaries_hh = [
         ['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']
     ]
     for language in languages:
@@ -160,11 +160,11 @@ def main():
         else:
             average_salary = None
         average_salary_object = [language, vacancies_found, vacancies_processed, average_salary]
-        table_data.append(average_salary_object)
+        avg_salaries_hh.append(average_salary_object)
         time.sleep(30)
-    table_hh = AsciiTable(table_data, title_hh)
+    avg_salaries_hh_table = AsciiTable(avg_salaries_hh, title_hh)
 
-    table_data = [
+    avg_salaries_sj = [
         ['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']
     ]
 
@@ -177,9 +177,9 @@ def main():
         else:
             average_salary = None
         average_salary_object = [language, number_of_vacansies_sj(language), vacancies_processed, average_salary]
-        table_data.append(average_salary_object)
-    table_sj = AsciiTable(table_data, title_sj)
-    return print(table_hh.table), print(), print(table_sj.table)
+        avg_salaries_sj.append(average_salary_object)
+    avg_salaries_sj_table = AsciiTable(avg_salaries_sj, title_sj)
+    return print(avg_salaries_hh_table.table), print(), print(avg_salaries_sj_table.table)
 
 
 if __name__ == '__main__':
