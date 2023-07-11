@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from terminaltables import AsciiTable
 
 
-def language_salary(vacancy="Python"):
+def get_salaries_hh(vacancy="Python"):
     page = 0
     pages_number = 1
     url = 'https://api.hh.ru/vacancies'
@@ -50,7 +50,7 @@ def predict_rub_salary(salary):
     return predict
 
 
-def superjob_get_vacansies(vacancy=''):
+def get_salaries_superjob(vacancy=''):
     page = 0
     pages_number = 1
     url = 'https://api.superjob.ru/2.0/vacancies/'
@@ -115,9 +115,9 @@ def main():
         ['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']
     ]
     for language in languages:
-        vacancies_payload = language_salary(language)
+        vacancies_payload = get_salaries_hh(language)
         vacancies_found = vacancies_payload['number_of_vacansies']
-        predicts = [predict_rub_salary(salary) for salary in language_salary(language)['salaries']]
+        predicts = [predict_rub_salary(salary) for salary in get_salaries_hh(language)['salaries']]
         real_salaryes = [salary for salary in predicts if salary is not None]
         vacancies_processed = len(real_salaryes)
         if len(real_salaryes) != 0:
@@ -134,7 +134,7 @@ def main():
     ]
 
     for language in languages:
-        vacancies_payload = superjob_get_vacansies(language)
+        vacancies_payload = get_salaries_superjob(language)
         number_of_vacansies_sj = vacancies_payload['number_of_vacansies']
         predicts = [predict_rub_salary_sj(salary) for salary in vacancies_payload['salaries']]
         real_salaryes = [salary for salary in predicts if salary is not None]
