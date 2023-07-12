@@ -39,13 +39,13 @@ def get_salaries_hh(vacancy=""):
 
 
 def predict_rub_salary(salary):
-    if salary is None or salary['currency'] is None or salary['currency'] != 'RUR':
+    if not salary or not salary['currency'] or salary['currency'] != 'RUR':
         return None
-    if salary['from'] is None and salary['to'] is None:
+    if not salary['from'] and not salary['to']:
         return None
-    if salary['to'] is None and salary['from'] is not None:
+    if salary['from'] and not salary['to']:
         return salary['from'] * 1.2
-    if salary['to'] is not None and salary['from'] is None:
+    if salary['to'] and not salary['from']:
         return salary['to'] * 0.8
     else:
         predict = (salary['from'] + salary['to']) / 2
@@ -86,7 +86,7 @@ def get_salaries_superjob(vacancy=''):
 
 
 def predict_rub_salary_sj(salary):
-    if salary[-1] is None or salary[-1] != "rub":
+    if not salary[-1] or salary[-1] != "rub":
         return None
     if salary[0] == 0 and salary[1] == 0:
         return None
