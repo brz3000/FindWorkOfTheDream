@@ -48,8 +48,8 @@ def predict_rub_salary(salary):
     if salary['to'] and not salary['from']:
         return salary['to'] * 0.8
     else:
-        predict = (salary['from'] + salary['to']) / 2
-        return predict
+        avg_salary = (salary['from'] + salary['to']) / 2
+        return avg_salary
 
 
 def get_salaries_superjob(vacancy=''):
@@ -88,15 +88,15 @@ def get_salaries_superjob(vacancy=''):
 def predict_rub_salary_sj(salary):
     if not salary[-1] or salary[-1] != "rub":
         return None
-    if salary[0] == 0 and salary[1] == 0:
+    if not salary[0] and not salary[1]:
         return None
-    if salary[0] > 0 and salary[1] == 0:
+    if salary[0] and not salary[1]:
         return salary[0] * 1.2
-    if salary[0] == 0 and salary[1] > 0:
+    if not salary[0] and salary[1]:
         return salary[1] * 0.8
     else:
-        predict = (salary[0] + salary[1]) / 2
-        return predict
+        avg_salary = (salary[0] + salary[1]) / 2
+        return avg_salary
 
 
 def main():
@@ -105,6 +105,7 @@ def main():
                  "Objective-C", "Shell", "Go", "C",
                  "C#", "C++", "PHP", "Ruby",
                  "Java", "JavaScript"]
+
     title_hh = 'HH Moscow'
     title_sj = 'SuperJob Moscow'
     avg_salaries_hh = [
@@ -113,10 +114,10 @@ def main():
     for language in languages:
         vacancies_payload = get_salaries_hh(language)
         vacancies_found = vacancies_payload['number_of_vacansies']
-        predicts = [predict_rub_salary(salary) for salary in get_salaries_hh(language)['salaries']]
-        real_salaryes = [salary for salary in predicts if salary is not None]
+        avg_salaries = [predict_rub_salary(salary) for salary in get_salaries_hh(language)['salaries']]
+        real_salaryes = [salary for salary in avg_salaries if salary]
         vacancies_processed = len(real_salaryes)
-        if len(real_salaryes) != 0:
+        if real_salaryes:
             average_salary = int(sum(real_salaryes) / len(real_salaryes))
         else:
             average_salary = None
@@ -132,10 +133,10 @@ def main():
     for language in languages:
         vacancies_payload = get_salaries_superjob(language)
         number_of_vacansies_sj = vacancies_payload['number_of_vacansies']
-        predicts = [predict_rub_salary_sj(salary) for salary in vacancies_payload['salaries']]
-        real_salaryes = [salary for salary in predicts if salary is not None]
+        avg_salaries= [predict_rub_salary_sj(salary) for salary in vacancies_payload['salaries']]
+        real_salaryes = [salary for salary in avg_salaries if salary]
         vacancies_processed = len(real_salaryes)
-        if len(real_salaryes) != 0:
+        if real_salaryes:
             average_salary = int(sum(real_salaryes) / len(real_salaryes))
         else:
             average_salary = None
