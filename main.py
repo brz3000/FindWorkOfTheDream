@@ -41,18 +41,11 @@ def get_salaries_hh(vacancy=""):
 def predict_rub_salary(salary):
     if not salary or not salary['currency'] or salary['currency'] != 'RUR':
         return None
-    if not salary['from'] and not salary['to']:
-        return None
-    if salary['from'] and not salary['to']:
-        return salary['from'] * 1.2
-    if salary['to'] and not salary['from']:
-        return salary['to'] * 0.8
     else:
-        avg_salary = (salary['from'] + salary['to']) / 2
-        return avg_salary
+        return count_real_salary(salary['from'],salary['to'])
 
 
-def get_salaries_superjob(vacancy=''):
+def get_salaries_superjob(vacancy, params):
     page = 0
     pages_number = 1
     url = 'https://api.superjob.ru/2.0/vacancies/'
@@ -61,10 +54,10 @@ def get_salaries_superjob(vacancy=''):
                "X-Api-App-Id": os.environ['SJ_SECRET']}
     salaries = []
     while page < pages_number:
-        params = {"login": os.environ['SJ_LOGIN'],
-                  "password": os.environ['SJ_PASS'],
-                  "client_id": os.environ['SJ_ID'],
-                  "client_secret": os.environ['SJ_SECRET'],
+        params = {"login": params['login'],
+                  "password": params['password'],
+                  "client_id": params['client_id'],
+                  "client_secret": params['client_secret'],
                   "keyword": f"программист {vacancy}",
                   "town": ID_CITY_SJ,
                   "page": page,
@@ -88,19 +81,30 @@ def get_salaries_superjob(vacancy=''):
 def predict_rub_salary_sj(salary):
     if not salary[-1] or salary[-1] != "rub":
         return None
-    if not salary[0] and not salary[1]:
-        return None
-    if salary[0] and not salary[1]:
-        return salary[0] * 1.2
-    if not salary[0] and salary[1]:
-        return salary[1] * 0.8
     else:
-        avg_salary = (salary[0] + salary[1]) / 2
+        return count_real_salary(salary[0],salary[1])
+
+
+def count_real_salary(salary_from, salary_to):
+    if not salary_from and not salary_to:
+        return None
+    if salary_from and not salary_to:
+        return salary_from * 1.2
+    if not salary_from and salary_to:
+        return salary_to * 0.8
+    else:
+        avg_salary = (salary_from + salary_to) / 2
         return avg_salary
 
 
 def main():
     load_dotenv()
+    param_sj = {
+    "login" : os.environ['SJ_LOGIN'],
+    "password" : os.environ['SJ_PASS'],
+    "client_id" : os.environ['SJ_ID'],
+    "client_secret" : os.environ['SJ_SECRET']
+    }
     languages = ["Python", "TypeScript", "Swift", "Scala",
                  "Objective-C", "Shell", "Go", "C",
                  "C#", "C++", "PHP", "Ruby",
@@ -131,7 +135,7 @@ def main():
     ]
 
     for language in languages:
-        vacancies_payload = get_salaries_superjob(language)
+        vacancies_payload = get_salaries_superjob(language, param_sj)
         number_of_vacansies_sj = vacancies_payload['number_of_vacansies']
         avg_salaries= [predict_rub_salary_sj(salary) for salary in vacancies_payload['salaries']]
         real_salaryes = [salary for salary in avg_salaries if salary]
@@ -143,7 +147,7 @@ def main():
         aggregate_one_language = [language, number_of_vacansies_sj, vacancies_processed, average_salary]
         avg_salaries_sj.append(aggregate_one_language)
     avg_salaries_sj_table = AsciiTable(avg_salaries_sj, title_sj)
-    return print(avg_salaries_hh_table.table), print(), print(avg_salaries_sj_table.table)
+    print(avg_salaries_hh_table.table), print(), print(avg_salaries_sj_table.table)
 
 
 if __name__ == '__main__':
