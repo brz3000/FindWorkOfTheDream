@@ -5,24 +5,24 @@ from dotenv import load_dotenv
 from terminaltables import AsciiTable
 
 
-ID_CITY_HH = 1
-ID_CITY_SJ = 4
-ID_PROFESSIONAL_ROLE_HH = 96
-COUNT_DAYS = 31
+HH_CITY_ID = 1
+SJ_CITY_ID = 4
+HH_PROFESSIONAL_ROLE_ID = 96
+DAYS_COUNT = 31
 VACANSIES_PER_PAGE = 100
 
 
-def get_salaries_hh(vacancy=""):
+def get_hh_salaries(language):
     page = 0
     pages_number = 1
     url = 'https://api.hh.ru/vacancies'
     headers = {"User-Agent": 'PostmanRuntime/7.30.1'}
     salaries = []
     while page < pages_number:
-        params = {"professional_role": ID_PROFESSIONAL_ROLE_HH,
-                  "area": ID_CITY_HH,
-                  "period": COUNT_DAYS,
-                  "text": f"программист {vacancy}",
+        params = {"professional_role": HH_PROFESSIONAL_ROLE_ID,
+                  "area": HH_CITY_ID,
+                  "period": DAYS_COUNT,
+                  "text": f"программист {language}",
                   "per_page": VACANSIES_PER_PAGE,
                   "page": page}
         try:
@@ -42,24 +42,24 @@ def predict_rub_salary(salary):
     if not salary or not salary['currency'] or salary['currency'] != 'RUR':
         return None
     else:
-        return count_real_salary(salary['from'],salary['to'])
+        return count_real_salary(salary['from'], salary['to'])
 
 
-def get_salaries_superjob(vacancy, params):
+def get_superjob_salaries(language, params):
     page = 0
     pages_number = 1
     url = 'https://api.superjob.ru/2.0/vacancies/'
     headers = {"User-Agent": 'PostmanRuntime/7.30.1',
                "Host": "api.superjob.ru",
-               "X-Api-App-Id": os.environ['SJ_SECRET']}
+               "X-Api-App-Id": params['client_secret']}
     salaries = []
     while page < pages_number:
         params = {"login": params['login'],
                   "password": params['password'],
                   "client_id": params['client_id'],
                   "client_secret": params['client_secret'],
-                  "keyword": f"программист {vacancy}",
-                  "town": ID_CITY_SJ,
+                  "keyword": f"программист {language}",
+                  "town": SJ_CITY_ID,
                   "page": page,
                   "count": VACANSIES_PER_PAGE
                   }
@@ -70,7 +70,9 @@ def get_salaries_superjob(vacancy, params):
             vacancies = payload['objects']
             pages_number = (payload['total'] / params['count']) + 1
             page += 1
-            salaries_payload = [(vacancy['payment_from'], vacancy['payment_to'], vacancy['currency']) for vacancy in vacancies]
+            salaries_payload = [(vacancy['payment_from'],
+                                 vacancy['payment_to'],
+                                 vacancy['currency']) for vacancy in vacancies]
             salaries = salaries + salaries_payload
         except requests.exceptions.HTTPError as error:
             exit("Can't get data from server: \n{0}".format(error))
@@ -82,7 +84,7 @@ def predict_rub_salary_sj(salary):
     if not salary[-1] or salary[-1] != "rub":
         return None
     else:
-        return count_real_salary(salary[0],salary[1])
+        return count_real_salary(salary[0], salary[1])
 
 
 def count_real_salary(salary_from, salary_to):
@@ -99,55 +101,71 @@ def count_real_salary(salary_from, salary_to):
 
 def main():
     load_dotenv()
-    param_sj = {
-    "login" : os.environ['SJ_LOGIN'],
-    "password" : os.environ['SJ_PASS'],
-    "client_id" : os.environ['SJ_ID'],
-    "client_secret" : os.environ['SJ_SECRET']
-    }
+    superjob_params = {
+                    "login": os.environ['SJ_LOGIN'],
+                    "password": os.environ['SJ_PASS'],
+                    "client_id": os.environ['SJ_ID'],
+                    "client_secret": os.environ['SJ_SECRET'],
+                    }
     languages = ["Python", "TypeScript", "Swift", "Scala",
                  "Objective-C", "Shell", "Go", "C",
                  "C#", "C++", "PHP", "Ruby",
                  "Java", "JavaScript"]
 
-    title_hh = 'HH Moscow'
-    title_sj = 'SuperJob Moscow'
-    avg_salaries_hh = [
-        ['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']
-    ]
+    HH_TITLE = 'HH Moscow'
+    SUPERJOB_TITLE = 'SuperJob Moscow'
+    hh_avg_salaries = [
+                    ['Язык программирования',
+                     'Вакансий найдено',
+                     'Вакансий обработано',
+                     'Средняя зарплата']
+                    ]
     for language in languages:
-        vacancies_payload = get_salaries_hh(language)
-        vacancies_found = vacancies_payload['number_of_vacansies']
-        avg_salaries = [predict_rub_salary(salary) for salary in get_salaries_hh(language)['salaries']]
+        payload_vacancies = get_hh_salaries(language)
+        found_vacancies = payload_vacancies['number_of_vacansies']
+        avg_salaries = [predict_rub_salary(salary) for salary in payload_vacancies['salaries']]
         real_salaryes = [salary for salary in avg_salaries if salary]
-        vacancies_processed = len(real_salaryes)
+        processed_vacancies = len(real_salaryes)
         if real_salaryes:
             average_salary = int(sum(real_salaryes) / len(real_salaryes))
         else:
             average_salary = None
-        aggregate_one_language = [language, vacancies_found, vacancies_processed, average_salary]
-        avg_salaries_hh.append(aggregate_one_language)
+        aggregate_one_language = [language,
+                                  found_vacancies,
+                                  processed_vacancies,
+                                  average_salary
+                                  ]
+        hh_avg_salaries.append(aggregate_one_language)
         time.sleep(30)
-    avg_salaries_hh_table = AsciiTable(avg_salaries_hh, title_hh)
+    hh_avg_salaries_table = AsciiTable(hh_avg_salaries, HH_TITLE)
 
-    avg_salaries_sj = [
-        ['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']
+    superjob_avg_salaries = [
+        ['Язык программирования',
+         'Вакансий найдено',
+         'Вакансий обработано',
+         'Средняя зарплата']
     ]
 
     for language in languages:
-        vacancies_payload = get_salaries_superjob(language, param_sj)
-        number_of_vacansies_sj = vacancies_payload['number_of_vacansies']
-        avg_salaries= [predict_rub_salary_sj(salary) for salary in vacancies_payload['salaries']]
+        payload_vacancies = get_superjob_salaries(language, superjob_params)
+        found_vacancies = payload_vacancies['number_of_vacansies']
+        avg_salaries = [predict_rub_salary_sj(salary) for salary in payload_vacancies['salaries']]
         real_salaryes = [salary for salary in avg_salaries if salary]
-        vacancies_processed = len(real_salaryes)
+        processed_vacancies = len(real_salaryes)
         if real_salaryes:
             average_salary = int(sum(real_salaryes) / len(real_salaryes))
         else:
             average_salary = None
-        aggregate_one_language = [language, number_of_vacansies_sj, vacancies_processed, average_salary]
-        avg_salaries_sj.append(aggregate_one_language)
-    avg_salaries_sj_table = AsciiTable(avg_salaries_sj, title_sj)
-    print(avg_salaries_hh_table.table), print(), print(avg_salaries_sj_table.table)
+        aggregate_one_language = [language,
+                                  found_vacancies,
+                                  processed_vacancies,
+                                  average_salary
+                                  ]
+        superjob_avg_salaries.append(aggregate_one_language)
+    superjob_avg_salaries_table = AsciiTable(superjob_avg_salaries, SUPERJOB_TITLE)
+    print(hh_avg_salaries_table.table)
+    print()
+    print(superjob_avg_salaries_table.table)
 
 
 if __name__ == '__main__':
