@@ -24,7 +24,8 @@ def get_hh_salaries(language):
                   "period": DAYS_COUNT,
                   "text": f"программист {language}",
                   "per_page": VACANSIES_PER_PAGE,
-                  "page": page}
+                  "page": page
+                  }
         try:
             response = requests.get(url, params=params, headers=headers)
             response.raise_for_status()
@@ -72,7 +73,8 @@ def get_superjob_salaries(language, params):
             page += 1
             salaries_payload = [(vacancy['payment_from'],
                                  vacancy['payment_to'],
-                                 vacancy['currency']) for vacancy in vacancies]
+                                 vacancy['currency']) for vacancy in vacancies
+                                ]
             salaries = salaries + salaries_payload
         except requests.exceptions.HTTPError as error:
             exit("Can't get data from server: \n{0}".format(error))
@@ -102,24 +104,26 @@ def count_real_salary(salary_from, salary_to):
 def main():
     load_dotenv()
     superjob_params = {
-                    "login": os.environ['SJ_LOGIN'],
-                    "password": os.environ['SJ_PASS'],
-                    "client_id": os.environ['SJ_ID'],
-                    "client_secret": os.environ['SJ_SECRET'],
-                    }
-    languages = ["Python", "TypeScript", "Swift", "Scala",
-                 "Objective-C", "Shell", "Go", "C",
-                 "C#", "C++", "PHP", "Ruby",
-                 "Java", "JavaScript"]
+        "login": os.environ['SJ_LOGIN'],
+        "password": os.environ['SJ_PASS'],
+        "client_id": os.environ['SJ_ID'],
+        "client_secret": os.environ['SJ_SECRET'],
+    }
+    languages = [
+        "Python", "TypeScript", "Swift", "Scala",
+        "Objective-C", "Shell", "Go", "C",
+        "C#", "C++", "PHP", "Ruby",
+        "Java", "JavaScript"
+    ]
 
     HH_TITLE = 'HH Moscow'
     SUPERJOB_TITLE = 'SuperJob Moscow'
     hh_avg_salaries = [
-                    ['Язык программирования',
-                     'Вакансий найдено',
-                     'Вакансий обработано',
-                     'Средняя зарплата']
-                    ]
+        ['Язык программирования',
+         'Вакансий найдено',
+         'Вакансий обработано',
+         'Средняя зарплата']
+    ]
     for language in languages:
         payload_vacancies = get_hh_salaries(language)
         found_vacancies = payload_vacancies['number_of_vacansies']
@@ -143,7 +147,8 @@ def main():
         ['Язык программирования',
          'Вакансий найдено',
          'Вакансий обработано',
-         'Средняя зарплата']
+         'Средняя зарплата'
+         ]
     ]
 
     for language in languages:
